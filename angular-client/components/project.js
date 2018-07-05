@@ -11,6 +11,7 @@ app.controller('project' , function ($scope,$http,$window ) {
 		url : url
 	}
 		$http(response).then(function (res) {
+			console.log(res.data)
 			$scope.projects = res.data
 		},function () {
 			console.log('error')
@@ -58,6 +59,7 @@ $scope.changeProj = function(projectId) {
     post({
  	  projectName  : $scope.newprojName,
  	  projectDisc : $scope.newprojDesc,
+
  	  _id : $scope.proj
  	},'/changeProj');
   $window.location.reload();
@@ -68,7 +70,8 @@ $scope.changeProj = function(projectId) {
 $scope.addproject = function () {
 	post({
 		projectName : $scope.projectName , 
-		projectDisc : $scope.projectDisc
+		projectDisc : $scope.projectDisc,
+		projectPair : $scope.projectPair
 	},'/project');
   	get('/project');
   //	$window.location.href = 'app2.html';
@@ -84,10 +87,10 @@ $scope.logout = function () {
 
 // take the project id from project html file when the user click on tasks that related with specefic 
 //project and redirect him to tasks page
-$scope.viewProjectId = function (projectId) {
+$scope.viewProjectId = function (projectId,name) {
 	// alert(projectName);
 	// $window.projName=projectName;
-	post({projectId:projectId},'/projectId')
+	post({projectId:projectId,name:name},'/projectId')
 	$window.location.href = 'app3.html'
 }
   get('/project')

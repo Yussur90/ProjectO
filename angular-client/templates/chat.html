@@ -1,0 +1,42 @@
+<div ng-controller='chatCtrl'>
+    <div class="container" style="background-color:#bbb">
+ <h2>Chatting Room </h2>
+ <form>
+   <div class="form-group">
+     <label for="sendFrom">from</label>
+     <input type="text" class="form-control" id="sendFrom" ng-model="sendFrom" required style="border:solid;">
+   </div>
+   <div class="form-group">
+     <label for="sendTo">to</label>
+     <input type="text" class="form-control" id="sendTo" ng-model="sendTo" required style="border:solid;">
+   </div>
+   <div class="form-group">
+   <label for="content">Enter your message here!</label>
+   <input class="form-control input-lg" id="content" type="text" ng-model="content" required style="border:solid;">
+ </div>
+ </form>
+ <div>
+     <center>
+      <button type="button" class="btn btn-primary" ng-click="addChat()">Send</button>
+       <button type="button" class="btn btn-primary" ng-click="get()">Recieve</button>
+     </center>
+       <div class="sub-header">
+          <div class="well" style="border:solid;"><center>inbox</center></div>
+       </div>
+<div class="container">
+   
+   <div>
+     <div   >
+       <div   ng-repeat='chat in chatInfo' >
+         <center>
+                   <div class="list-group-item" style="border:2px solid black;border-radius: 25px;width:500px ;height:100px">
+                   <p > sendFrom: {{chat.sendFrom}}</p>
+                   <p >message:{{chat.content}}</p>
+                   </div><hr>
+         </center>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+

@@ -39,6 +39,14 @@
                 <input type="text" class="form-control" name="project-desc" placeholder="Type project description"  ng-model="projectDisc">
             </div>
         </div>
+        <div class="col">
+
+          <h3>Project Team : </h3>
+            <div class="md-form mt-0">
+                <input type="text" class="form-control" name="project-desc" placeholder="Write your team members with commas between them"  ng-model="projectPair">
+
+            </div>
+        </div>
         <!-- Grid column -->
     </div>
     <!-- Grid row -->
@@ -67,16 +75,16 @@
 
                 <div class="w3-teal">
                   <button class="w3-button w3-xlarge w3-right" ng-click="bar = !bar"  style="background-color: #275E64 ;" >&#9776;</button>
-                  <div class="w3-container" style="background-color: #275E64 ;" ng-click="viewProjectId(project._id)">
+                  <div class="w3-container" style="background-color: #275E64 ;" ng-click="viewProjectId(project._id,project.projectName)">
                     <h2>{{project.projectName}}</h2>
                   </div>
                 </div>
 
                 <h3 class="w3-bar-item  w3-hide-small" style="width:85px">{{$index+1}} 📃</h3>
-                <div class="w3-bar-item" ng-click="viewProjectId(project._id)">
+                <div class="w3-bar-item" ng-click="viewProjectId(project._id,project.projectName)">
                   <span class="w3-large" >{{project.projectDisc}}</span><br>
-
-                  <span class="badge badge-primary badge-pill">Tasks : {{project.tasks.length}}</span>
+                  <span class="w3-large" >{{project.projectPair}}</span><br>
+                   <span class="badge badge-primary badge-pill">Tasks : {{project.tasks.length}}</span>
                 </div>
               </li>
 

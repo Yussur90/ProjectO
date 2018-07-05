@@ -2,7 +2,15 @@
 		<div class="container">
 				<div class="profile">    	
 					<img align="left" class="image-lg "  src="images/blank-business-composition-373076.jpg" alt="Profile" style="" />
-					<img align="left" class="image-profile img-circle" src="images/Portrait_Placeholder.jpg" alt="Profile image example" />
+					<!-- <img align="left" class="image-profile img-circle" src="images/Portrait_Placeholder.jpg" alt="Profile image example" /> -->
+					<form><label class = "btn btn-primary">
+					<input type="file" name="file" style="display:none" 
+					onchange="angular.element(this).scope().selectFile(this.files)"/>
+					Change
+					</label> 
+				</form>
+
+					<img ng-src="{{hanan || default}}" height="200" alt="Image preview..." align="left" class="image-profile img-circle">
 					<div class="profile-text">
 						<h1>{{user.username}}</h1>
 						<p>Discription</p>
@@ -10,25 +18,28 @@
 				</div>
 			</div> 
 
-	<div class="container text-center">    
-		<div class="row" >
-			<div class="col-sm-5 well" >
-				<div class="well">
-					<h3>Age : </h3>
-					<h3>Address : </h3>
-				</div>      
-			</div>
+    <div class="container ">    
+        <div class="row" >
+            <div class="col-sm-5 well" >
+                <div class="well">
+                    <h3>Age:{{user.age}}</h3>
+                    <h3>Address:{{user.address}}</h3>
+                </div>      
+            </div>
 
-			<div class="col-sm-7 well" >
-				<div class="well" >
-					<h2>My Projects : </h2>
-					<br>
-					<div ng-repeat='proj in user.projects'>
-					<h3>{{proj.projectName}}</h3>
-					</div>
-				</div>      
-			</div>
+            <div class="col-sm-7 well" >
+                <div class="well" >
+                    <h2>My Projects : </h2>
+                    <br>
+                    <div ng-repeat='proj in user.projects'>
+                    <h3>{{proj.projectName}}</h3>
+                    </div>
+                </div>      
+            </div>
 
-		</div>
-	</div>
+        </div>
+    </div>
+    <!-- <div>
+         <button type="button" class="btn btn-success">sendMessage</button>
+    </div> -->
 </div>

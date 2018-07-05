@@ -20,13 +20,16 @@ app.controller('signup' , function ($scope,$http ) {
   post({
 		username : $scope.username ,
 		email : $scope.email,
-		password : $scope.password
-      });
-  }
+		password : $scope.password,
+		Address:$scope.Address,
+		Age:$scope.Age
 
-});
+  })
+
+};
+})
 // disable sign up button untill user fill all fields correctly 
-angular.module('meepo').directive('disableBtn',
+angular.module('mainApp').directive('disableBtn',
 	function() {
 		return {
 			restrict : 'A',

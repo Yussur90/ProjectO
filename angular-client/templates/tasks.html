@@ -1,3 +1,42 @@
+
+
+
+<style>
+
+/** {
+    box-sizing: border-box;
+}*/
+
+/* Create three equal columns that floats next to each other */
+.column {
+  box-sizing: content-box;    
+    width: 300px;
+    height: 500px;
+    float: left;
+    
+    padding: 10px;
+   /* Should be removed. Only for demonstration */
+
+
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+#div1 {
+height:60%;
+width:100%;
+}
+
+
+
+
+</style>
 <div  ng-controller="tasksCtrl">
   <!-- this section for navigation Bar-->
   <nav class="navbar navbar-expand-lg navbar-dark " >
@@ -20,29 +59,11 @@
 </nav>
 <!-- End Navigation Bar section--> 
 
+
 <div class="container">
   <h1> Tasks:</h1>
-  <table  class="table table-striped">
-    <thead>
-      <tr>
-        <th>Task Description</th>
-        <th>Assgined To</th>
-        <th>Task Complexity</th>
-        <th>Status</th>
-      </tr>
-      <thead>
-        <tbody>
-          <tr ng-repeat='task in tasksInfo'>
-            <td>{{task.description}}</td>
-            <td>{{task.assignedTo}}</td>
-            <td>{{task.complexity}}</td>
-            <td>{{task.status}}</td>
+  <button type="button" class="btn btn-primary active" data-toggle="modal" data-target="#myModalAdd" ng-click="Showassignedto()">Add New Task</button>
 
-            <td><button type="button" class="btn btn-danger active" ng-click="deleteTask(task.description)">Delete</button></td>
-            <td><button type="button" class="btn btn-warning active" ng-click="getOldTaskData(task)" data-toggle="modal" data-target="#myModalEdit">Update</button></td>
-          </tr>
-        </tbody>
-      </table>
 
       <!-- Modal Edit -->
       <div class="modal fade" id="myModalEdit" role="dialog">
@@ -100,6 +121,19 @@
                   </select>
                 </div>
               </div>
+
+              <div class="form-group">
+             <label class="control-label col-sm-2" >Task priority</label>
+             <div class="col-sm-10">
+                <select class="form-control" ng-model="mypriority">
+                   <option>🗣urgent</option>
+                    <option>🤝normal</option>
+                    <option>🤙🏻complicated</option>
+                    <option>🤖 new</option>
+                </select>
+               
+               </div>
+              </div>
               
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
@@ -112,7 +146,69 @@
 
       </div>
     </div> <!-- End Edit -->
+    <div class="row" >
 
+ <div class="column" style="background-color:#aaa;" ondragover='allowdrop(event)' ondrop='drop(event)' >
+   <h2>To Do</h2>
+   <div class="row"  >
+       <div   ng-repeat='task in tasksInfo'  >
+         
+         <div  id=task._id  class="col-bg-4" draggable="true" ondragstart='drag(event)'>
+           <ul class="w3-ul  w3-hoverable " >
+             <li class="w3-bar" style="border: 2px solid black; padding: 10px; border-radius: 25px;" >
+
+               <div  class="w3-card w3-animate-right " style="right:0; align-items: center;" id="rightMenu" ng-show="bar">
+                 <!-- we used data-target to connect this button on Modal fadeout-->
+                 <a href="#" class="w3-bar-item w3-button" ng-click="deleteTask(task.description)" style="color: white;">Delete</a>
+                 <a href="#" class="w3-bar-item w3-button" ng-click="getOldTaskData(task)" data-target="#myModalEdit" data-toggle="modal" style="color: white;">Update</a>
+               </div>
+              <center><div>
+             <h5>Deadline In</h5>
+             <p id="time" style="background-color: #ffffff ;border: 2px solid black"></p>
+             </div></center>
+               <div class="w3-teal">
+                 <button class="w3-button w3-xlarge w3-right" ng-click="bar = !bar"  style="background-color: #275E64 ;" >&#9776;</button>
+                 <div class="w3-container" style="background-color: #275E64 ;" >
+                   <h2>{{task.description}}</h2>
+                 </div>
+               </div>
+               
+               <h3 class="w3-bar-item  w3-hide-small" style="width:85px">{{$index+1}}📄 </h3>
+               <div class="w3-bar-item">
+                 <span class="w3-large" >{{task.complexity}}</span><br>
+              <div class="w3-bar-item" >
+                 <span class="w3-large" style="background-color: #ffffff ;border: 2px solid black" >{{task.priority}}</span><br>
+
+                 
+               </div>
+                 
+               </div>
+             </li>
+
+           </ul>
+         </div>
+       </div>
+
+     </div>
+     
+ 
+ </div>
+
+ <div class="column" style="background-color:#bbb;" ondragover='allowdrop(event)' ondrop='drop(event)' >
+   <h2 >In Progress</h2>
+   <div></div>
+
+   
+ </div>
+ <div class="column" style="background-color:#ccc;" ondragover='allowdrop(event)' ondrop='drop(event)'>
+   <h2>Done</h2>
+
+   <div></div>
+
+   
+
+ </div>
+</div>
     <!-- Modal Add -->
     <div class="modal fade" id="myModalAdd" role="dialog">
       <div class="modal-dialog">
@@ -131,18 +227,24 @@
                 <input type="text" class="form-control" ng-model="description">
               </div>
             </div>
+        
 
             <div class="form-group">
+                <label class="control-label col-sm-2" >Assgined To</label>
+                <div class="col-sm-10">
+                  <select class="form-control" ng-model="assignedTo" >
+                    <option ng-repeat='member in team'>{{member}}</option>
+                  </select>
+                </div>
+              </div>
+
+
+            <!-- <div class="form-group">
               <label class="control-label col-sm-2" >Assgined To</label>
               <div class="col-sm-10">
-                <select class="form-control" ng-model="assignedTo">
-                  <option>AbdulHameed</option>
-                  <option>Abdullateef</option>
-                  <option>Qays</option>
-                  <option>Shatha</option>
-                </select>
+                <input type="text" class="form-control" ng-model="assignedTo">
               </div>
-            </div>
+            </div> -->
 
             <div class="form-group">
               <label class="control-label col-sm-2" >Task Complexity</label>
@@ -168,15 +270,37 @@
                   <option>In Progress</option>
                   <option>Completed</option>
                 </select>
-
               </div>
             </div>
-
+            <!-- <label class="control-label col-sm-2" ></label>
+            <div ng-app="mainTask" ng-controller="tasksCtrl">
+                <select  ng-model="BColor" ng-change="SetStyle()">
+                    <option>#ff0000</option>
+                    <option>Green</option>
+                    <option>Blue</option>
+                    <option>Yellow</option>
+                </select>
+               <span ng-style="CustomStyle">Task priority</span>
+               </div> -->
+               
+            <div class="form-group">
+             <label class="control-label col-sm-2" >Task priority</label>
+             <div class="col-sm-10">
+                <select class="form-control" ng-model="mypriority">
+                  <option>🗣urgent</option>
+                    <option>🤝normal</option>
+                    <option>🤙🏻complicated</option>
+                    <option>🤖 new</option>
+                </select>
+               
+               </div>
+              </div>
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-success" data-dismiss="modal" ng-click="addNewTask()">Add</button>
               </div>
             </div>
+
           </form> 
         </div>
       </div>
@@ -184,7 +308,6 @@
     </div>
   </div> <!-- End Add task-->
 
+</div>
+</div>
 
-  <button type="button" class="btn btn-primary active" data-toggle="modal" data-target="#myModalAdd">Add New Task</button>
-</div>
-</div>

@@ -1,8 +1,22 @@
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt');
 let Schema =mongoose.Schema;
+
+
+//mongoose.connect('mongodb://localhost:/PM-dbCD' );
+// mongoose.connect('mongodb://admin:admin@ds249269.mlab.com:49269/pm-db');
+
+
 //mongoose.connect('mongodb://localhost:/PM-db' );
-mongoose.connect('mongodb://admin:admin@ds249269.mlab.com:49269/pm-db');
+mongoose.connect('mongodb://localhost/pm-db');
+
+//mongoose.connect('mongodb://localhost:/PM-db' );
+
+//mongoose.connect('mongodb://admin:admin@ds249269.mlab.com:49269/pm-db');
+
+
+
+
 var db = mongoose.connection;
 db.on('error' , function(){
 	console.log('mongoose not Connected !')
@@ -14,24 +28,46 @@ var taskSchema = mongoose.Schema({
 	description: String,
 	assignedTo: String,
 	complexity: Number,
-	status: String
+	status: String,
+	priority: String
 });
 var projectSchama = mongoose.Schema({
 	projectName : String , 
 	projectDisc : String,
+
+	projectPair: [String],//pair is team 
+
+
+
 	tasks:[taskSchema]//each project has many tasks
 })
+
+var imageSchema = mongoose.Schema({
+image: String	
+})
+
+
 var userSchema = mongoose.Schema({
 	username :{type : String ,required :true, index :{unique:true} },
 	password :{type : String ,required :true}, 
 	email :{type : String ,required :true}, 
-	projects:[projectSchama]//each user has many projects
+	Address : {type : String , required :true},
+	Age : {type : Number , required:true},
+	projects:[projectSchama],//each user has many projects
+	photo:imageSchema
 	
+});
+var chatSchema = mongoose.Schema({
+	sendFrom:{type:String,required:true},
+	sendTo:{type:String,required:true},
+	content:{type:String,required:true}
 });
 // define models for the schema
 var User = mongoose.model("User" , userSchema);
+var Image = mongoose.model("Image" , imageSchema);
 var Project = mongoose.model("Project" , projectSchama);
 var Task = mongoose.model('Task', taskSchema);
+var Chat = mongoose.model('Chat',chatSchema)
 // encrypt the password and save username and encrypted password
 var save = function (newUser , callback) {
 	bcrypt.genSalt(10,function(err,salt){
@@ -46,9 +82,48 @@ var save = function (newUser , callback) {
 	});
 
 }
+
+var addChat=function(data,callback){
+	console.log('data')
+var msg=new Chat({sendFrom:data.sendFrom,sendTo:data.sendTo,content:data.content});
+msg.save(function(err){
+	if(err){
+		return handleError(err)
+	}else{
+		console.log("data saved")
+	}
+})
+
+}
+
+
+// }
+
+
 // add the task to the task table, project table and to user table
 var addTask = function(data, callback) {
-	var task = new Task({description:data.description,assignedTo:data.assignedTo,complexity:data.complexity,status:data.status});
+
+	var task = new Task({description:data.description,assignedTo:data.assignedTo,complexity:data.complexity,status:data.status,priority:data.priority});
+	task.save();
+
+
+
+	User.findOne({username:data.assignedTo}, function (err, user) {
+		if (err) return handleError(err);
+		for(var i=0; i<user.projects.length ;i++){
+			if(user.projects[i].projectName.toString() === data.projectName){
+				Project.findOne({projectName:data.projectName},function(err,project){
+					project.tasks.push(task);
+					project.save();
+				})
+				user.projects[i].tasks.push(task);
+
+				user.save();
+				task.save();
+			}
+		}
+	});
+
 	User.findById(data.user_id, function (err, user) {
 		if (err) return handleError(err);
 		for(var i=0; i<user.projects.length ;i++){
@@ -146,7 +221,19 @@ var updateTask = function(query, newData,userId,projectId , callback) {
 
 // this function to add project to the user schema and project schema
 var addProject = function(data, callback) {
-	var project=new Project({projectName:data.projectName,projectDisc:data.projectDisc});
+	var project=new Project({projectName:data.projectName,projectDisc:data.projectDisc,projectPair:data.projectPair});
+
+	for (var i=0;i<data.projectPair.length;i++){
+		User.findOne({username:data.projectPair[i]},function (err, user) {
+
+		if (err) return handleError(err);
+		user.projects.push(project);
+		user.save();
+		project.save();
+	})
+
+	}
+
 	User.findById(data.project_id, function (err, user) {
 		if (err) return handleError(err);
 		user.projects.push(project);
@@ -154,6 +241,18 @@ var addProject = function(data, callback) {
 		project.save();
 	});
 }
+
+var addimage = function(data, callback) {
+	var imagee=new Image({image:data.image});
+	User.findById(data.image_id, function (err, user) {
+		if (err) return handleError(err);
+		user.photo=imagee;
+		user.save();
+		imagee.save();
+	});
+}
+
+
 // this function to delete project to the user schema and project schema
 var deleteProject = function(data,userId,callback){
 	User.findById(userId,function(err,user){
@@ -170,7 +269,7 @@ var deleteProject = function(data,userId,callback){
 		if(err){
 			callback(err,null)
 		}
-		Task.delete
+		//Task.delete
 		callback(null,elem)
 	});
 }
@@ -200,11 +299,15 @@ var changeProject = function(query,condition,userId,callback){
 	});
 }
 
+module.exports.addChat=addChat;
+module.exports.Chat=Chat;
 module.exports.save = save;
 module.exports.User = User;
 module.exports.Project = Project;
 module.exports.Task = Task;
 module.exports.addTask = addTask;
+module.exports.Image = Image;
+module.exports.addimage = addimage;
 module.exports.deleteTask = deleteTask;
 module.exports.updateTask = updateTask;
 module.exports.addProject = addProject;
